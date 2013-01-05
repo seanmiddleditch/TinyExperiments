@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FixedSizeDelegate", "FixedSizeDelegates\FixedSizeDelegates.vcxproj", "{1278F5BE-F858-49C3-9AE6-1423A8005932}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SlotMapExample", "SlotMapExample\SlotMapExample.vcxproj", "{C397EF97-4C00-4E2F-B96B-2F0714EDD891}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,12 @@ Global
 		{1278F5BE-F858-49C3-9AE6-1423A8005932}.Release|Win32.Build.0 = Release|Win32
 		{1278F5BE-F858-49C3-9AE6-1423A8005932}.Release|x64.ActiveCfg = Release|x64
 		{1278F5BE-F858-49C3-9AE6-1423A8005932}.Release|x64.Build.0 = Release|x64
+		{C397EF97-4C00-4E2F-B96B-2F0714EDD891}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C397EF97-4C00-4E2F-B96B-2F0714EDD891}.Debug|Win32.Build.0 = Debug|Win32
+		{C397EF97-4C00-4E2F-B96B-2F0714EDD891}.Debug|x64.ActiveCfg = Debug|Win32
+		{C397EF97-4C00-4E2F-B96B-2F0714EDD891}.Release|Win32.ActiveCfg = Release|Win32
+		{C397EF97-4C00-4E2F-B96B-2F0714EDD891}.Release|Win32.Build.0 = Release|Win32
+		{C397EF97-4C00-4E2F-B96B-2F0714EDD891}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
