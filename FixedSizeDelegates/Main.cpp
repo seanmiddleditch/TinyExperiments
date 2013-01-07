@@ -249,22 +249,22 @@ struct delegate
 	{
 		virtual int invoke(int p)
 		{
-			return (*reinterpret_cast<T*>(reinterpret_cast<char*>(this) - offsetof(delegate, binding)))(p);
+			return (*reinterpret_cast<T*>(reinterpret_cast<char*>(this) - delegate::max_size))(p);
 		}
 
 		virtual void copy_construct(const void* source)
 		{
-			new (reinterpret_cast<char*>(this) - offsetof(delegate, binding)) T(*reinterpret_cast<const T*>(source));
+			new (reinterpret_cast<char*>(this) - delegate::max_size) T(*reinterpret_cast<const T*>(source));
 		}
 
 		virtual void move_construct(void* source)
 		{
-			new (reinterpret_cast<char*>(this) - offsetof(delegate, binding)) T(std::move(*reinterpret_cast<T*>(source)));
+			new (reinterpret_cast<char*>(this) - delegate::max_size) T(std::move(*reinterpret_cast<T*>(source)));
 		}
 
 		virtual void destruct()
 		{
-			reinterpret_cast<T*>(reinterpret_cast<char*>(this) - offsetof(delegate, binding))->~T();
+			reinterpret_cast<T*>(reinterpret_cast<char*>(this) - delegate::max_size)->~T();
 		}
 	};
 
@@ -275,17 +275,17 @@ struct delegate
 	{
 		virtual int invoke(int p)
 		{
-			return (**reinterpret_cast<T**>(reinterpret_cast<char*>(this) - offsetof(delegate, binding)))(p);
+			return (**reinterpret_cast<T**>(reinterpret_cast<char*>(this) - delegate::max_size))(p);
 		}
 
 		virtual void copy_construct(const void* source)
 		{
-			*reinterpret_cast<T**>(reinterpret_cast<char*>(this) - offsetof(delegate, binding)) = *reinterpret_cast<T* const*>(source);
+			*reinterpret_cast<T**>(reinterpret_cast<char*>(this) - delegate::max_size) = *reinterpret_cast<T* const*>(source);
 		}
 
 		virtual void move_construct(void* source)
 		{
-			*reinterpret_cast<T**>(reinterpret_cast<char*>(this) - offsetof(delegate, binding)) = *reinterpret_cast<T* const*>(source);
+			*reinterpret_cast<T**>(reinterpret_cast<char*>(this) - delegate::max_size) = *reinterpret_cast<T* const*>(source);
 		}
 
 		virtual void destruct()
@@ -307,10 +307,9 @@ struct unit_stats
 {
 	int constructed;
 	int copied;
-	int moved;
 	int destructed;
 
-	unit_stats() : constructed(0), copied(0), moved(0), destructed(0) {}
+	unit_stats() : constructed(0), copied(0), destructed(0) {}
 };
 
 // this struct has side effects on construction, copy-construction,
@@ -327,7 +326,7 @@ struct side_effects
 	side_effects(unit_stats& stats) : stats(stats) { ++stats.constructed; }
 	~side_effects() { ++stats.destructed; }
 	side_effects(const side_effects& rhs) : stats(rhs.stats) { ++stats.copied; }
-	side_effects(side_effects&& rhs) : stats(rhs.stats) { ++stats.moved; }
+	side_effects(side_effects&& rhs) : stats(rhs.stats) { ++stats.copied; }
 };
 
 // a regular old-style functor wrapper for testing stuff
@@ -336,6 +335,7 @@ struct Functor
 	side_effects fx;
 
 	Functor(unit_stats& stats) : fx(stats) {}
+	Functor(const Functor& rhs) : fx(rhs.fx) {}
 	Functor(Functor&& rhs) : fx(std::move(rhs.fx)) {}
 
 	int operator()(int x) { return x; }
@@ -443,8 +443,7 @@ void test7()
 		auto d8 = delegate::make(Functor(stats));
 
 		ASSERT_EQ(1, stats.constructed);
-		ASSERT_EQ(0, stats.copied);
-		ASSERT_EQ(1, stats.moved);
+		ASSERT_EQ(1, stats.copied);
 		ASSERT_EQ(1, stats.destructed);
 
 		ASSERT_EQ(5, d8(5));
