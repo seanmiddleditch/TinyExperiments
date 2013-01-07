@@ -1,6 +1,7 @@
 #include <vector>
 #include <map>
 #include <cassert>
+#include <cstring>
 
 // very slow id-object map
 namespace v1
